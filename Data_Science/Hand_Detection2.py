@@ -5,10 +5,8 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('hand_detector.avi', fourcc, 20.0, (640, 480))
+out = cv2.VideoWriter('hand_detector.avi', fourcc, 20.0, (640,  480))
 
-
-# For webcam input:
 cap = cv2.VideoCapture(0)
 with mp_hands.Hands(
     model_complexity=0,
@@ -31,10 +29,10 @@ with mp_hands.Hands(
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
+    
+
     width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-
-
 
     if results.multi_hand_landmarks:
       for hand_landmarks in results.multi_hand_landmarks:
@@ -44,12 +42,9 @@ with mp_hands.Hands(
             mp_hands.HAND_CONNECTIONS,
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
-
         data = hand_landmarks.landmark[8]
-        coords = mp_drawing._normalized_to_pixel_coordinates(data.x, data)
-        cv2.circle(image, coords, )
-
-
+        coords = mp_drawing._normalized_to_pixel_coordinates(data.x, data.y, width, height)
+        cv2.circle(image, coords, 50, (0, 0, 255), -1)
     cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
     out.write(image)
     if cv2.waitKey(5) & 0xFF == 27:
